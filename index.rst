@@ -1,6 +1,10 @@
 Programación PHP
 =================
 
+El objetivo de este sitio es presentar una serie de tutoriales básicos sobre el desarrollo de aplicaciones web utilizando el lenguaje PHP. 
+
+Los tutoriales disponibles hasta el momento son los siguientes:
+
 Contenidos
 ==========
 
