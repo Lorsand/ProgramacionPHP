@@ -15,7 +15,7 @@ Una página PHP generalmente consiste de una página HTML con comandos PHP incru
 	  </body>
 	</html>
 
-El comando *echo* de PHP produce la salida que se inserta en la página HTML. Note que el código PHP se escribe dentro de los delimitadores *<?php* y *?>*.
+El comando *echo* de PHP produce la salida que se inserta en la página HTML. Note que el código PHP se escribe dentro de los delimitadores *\<?php* y *?\>*.
 
 Las instrucciones se separan con *';'*, en el caso de ser la última instrucción no es necesario el punto y coma.
 
@@ -474,11 +474,9 @@ Además, existen una serie de variables predefinidas denominadas:
 -   E\_ERROR: Error sin recuperación.
 -   E\_WARNING: Error recuperable.
 -   E\_PARSE: Error no recuperable (sintaxis).
--   E\_NOTICE: Puede Tratarse de un error o no. Normalmente permite
-    continuar la ejecución.\
-     Ejemplo:
+-   E\_NOTICE: Puede Tratarse de un error o no. Normalmente permite continuar la ejecución.
 
-Todas las constantes que empiezan por "E\_"se utilizan normalmente con la función *error\_reporting()*.
+Todas las constantes que empiezan por "E\_"se utilizan normalmente con la función *error_reporting()*.
 
 	<html>
 	<head> <title>Ejemplo 14</title></head>
@@ -493,7 +491,6 @@ Todas las constantes que empiezan por "E\_"se utilizan normalmente con la funci�
 	
 	</body>
 	</html>
-
 
 ## Expresiones y operadores
 

@@ -30,7 +30,8 @@ sería la siguiente:
     </html>
 
 El comando *echo* de PHP produce la salida que se inserta en la página
-HTML. Note que el código PHP se escribe dentro de los delimitadores **.
+HTML. Note que el código PHP se escribe dentro de los delimitadores
+*<?php* y *?>*.
 
 Las instrucciones se separan con *';'*, en el caso de ser la última
 instrucción no es necesario el punto y coma.
@@ -603,7 +604,7 @@ Además, existen una serie de variables predefinidas denominadas:
     Ejemplo:
 
 Todas las constantes que empiezan por "E\_"se utilizan normalmente con
-la función *error\_reporting()*.
+la función *error_reporting()*.
 
 ::
 
