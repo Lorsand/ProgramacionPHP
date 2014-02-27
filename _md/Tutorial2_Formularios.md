@@ -1,6 +1,6 @@
 # Procesamiento de formularios
 
-Es muy sencillo procesar formularios con PHP, ya que los parámetros del formulario están disponibles en los arreglos $_GET y $_POST.
+Es muy sencillo procesar formularios con PHP, ya que los parámetros del formulario están disponibles en los arreglos *$\_GET* y *$\_POST*.
 
 ## Métodos
 
@@ -16,17 +16,17 @@ Una solicitud POST pasa los parámetros del formulario en el cuerpo de la solici
 	  // handle a GET request	} else {	  die("You may only GET this page."); 
 	}
 ## Parámetros
-Se utilizan los arreglos *$_POST*, *$_GET* y *$_FILES* para acceder a los parámetros de formulario desde el código PHP. Las llaves son los nombres de los parámetros y los valores son los valores de esos parámetros. Por ejemplo, considere la siguiente página utilizada para separar una palabra:
+Se utilizan los arreglos *$\_POST*, *$\_GET* y *$\_FILES* para acceder a los parámetros de formulario desde el código PHP. Las llaves son los nombres de los parámetros y los valores son los valores de esos parámetros. Por ejemplo, considere la siguiente página utilizada para separar una palabra:
 	<html>
-	  <head><title>Formulario de separación</title></head>
+	  <head><title>Formulario</title></head>
 	  <body>
 	    <form action="separar.php" method="POST">
-	      Ingrese una palabra: <input type="text" name="word" /><br />
+	      Ingrese una palabra: <input type="text" name="word" /><br/>
 	      Largo de las separaciones ?
-	      <input type="text" name="number" /><br />
+	      <input type="text" name="number" /><br/>
 	      <input type="submit" value="Dividir">
 	   </form>
-	  </body> 
+	  </body>
 	</html>
 
 El programa PHP para procesar dicho formulario sería el siguiente:
