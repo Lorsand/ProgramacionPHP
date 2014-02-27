@@ -1,6 +1,6 @@
 # Procesamiento de formularios
 
-Es muy sencillo procesar formularios con PHP, ya que los parámetros del formulario están disponibles en los arreglos *$\_GET* y *$\_POST*.
+Es muy sencillo procesar formularios con PHP, ya que los parámetros del formulario están disponibles en los arreglos \_GET y \_POST.
 
 ## Métodos
 
@@ -13,20 +13,24 @@ A solicitud GET codifica los parámetros del formulario en la dirección URL en 
 Una solicitud POST pasa los parámetros del formulario en el cuerpo de la solicitud HTTP, dejando intacta la URL. El tipo de método que se utilizó para solicitar una página PHP está disponible a través de $_SERVER['REQUEST_METHOD']. Por ejemplo:
 
 	if ($_SERVER['REQUEST_METHOD'] == 'GET') {
-	  // handle a GET request	} else {	  die("You may only GET this page."); 
+	  // handle a GET request
+	} else {
+	  die("You may only GET this page.");
 	}
 ## Parámetros
-Se utilizan los arreglos *$\_POST*, *$\_GET* y *$\_FILES* para acceder a los parámetros de formulario desde el código PHP. Las llaves son los nombres de los parámetros y los valores son los valores de esos parámetros. Por ejemplo, considere la siguiente página utilizada para separar una palabra:
-	<html>
-	  <head><title>Formulario</title></head>
-	  <body>
-	    <form action="separar.php" method="POST">
-	      Ingrese una palabra: <input type="text" name="word" /><br/>
-	      Largo de las separaciones ?
-	      <input type="text" name="number" /><br/>
-	      <input type="submit" value="Dividir">
-	   </form>
-	  </body>
+Se utilizan los arreglos \_POST, \_GET y \_FILES para acceder a los parámetros de formulario desde el código PHP. Las llaves son los nombres de los parámetros y los valores son los valores de esos parámetros. Por ejemplo, considere la siguiente página utilizada para separar una palabra:
+
+	<html>
+	<head><title>Formulario</title></head>
+	<body>
+		<form action="separar.php" method="POST">
+			Ingrese una palabra:
+			<input type="text" name="word"/><br/>
+			Largo de las separaciones:
+			<input type="text" name="number" /><br/>
+			<input type="submit" value="Dividir">
+		</form>
+	</body>
 	</html>
 
 El programa PHP para procesar dicho formulario sería el siguiente:
@@ -41,23 +45,24 @@ El programa PHP para procesar dicho formulario sería el siguiente:
 	}
 ## Páginas con auto-procesamiento
 Una página PHP puede ser utilizada tanto para generar un formulario como para procesarlo.
-	<html>
-	  <head><title>Temperature Conversion</title></head>
-	  <body>
-	    <?php if ($_SERVER['REQUEST_METHOD'] == 'GET') { ?>
-	      <form action="<?php echo $_SERVER['PHP_SELF'] ?>" method="POST">
-	        Fahrenheit temperature:
-	        <input type="text" name="fahrenheit" /><br />
-	        <input type="submit" value="Convert to Celsius!" />
-	      </form>
-	    <?php } else if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-	      $fahrenheit = $_POST['fahrenheit']; 
-	      $celsius = ($fahrenheit - 32) * 5 / 9;
-	      printf("%.2fF is %.2fC", $fahrenheit, $celsius); 
-	    } else {
-	     die("This script only works with GET and POST requests.");
-	    } ?>
-	  </body>
+
+	<html>
+	<head><title>Temperature Conversion</title></head>
+	<body>
+		<?php if ($_SERVER['REQUEST_METHOD'] == 'GET') { ?>
+			<form action="<?php echo $_SERVER['PHP_SELF'] ?>" method="POST">
+				Fahrenheit temperature:
+				<input type="text" name="fahrenheit" /><br/>
+				<input type="submit" value="Convert to Celsius!" />
+			</form>
+			<?php } else if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+				$fahrenheit = $_POST['fahrenheit'];
+				$celsius = ($fahrenheit - 32) * 5 / 9;
+				printf("%.2fF is %.2fC", $fahrenheit, $celsius);
+			} else {
+				die("This script only works with GET and POST requests.");
+			} ?>
+		</body>
 	</html>
 
 Otra forma de programa decide si se debe mostrar un formulario o proceso es ver si alguno de los parámetros se ha suministrado. Esto le permite escribir una página de auto-procesamiento que utiliza el método GET para enviar valores.
