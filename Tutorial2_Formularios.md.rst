@@ -44,19 +44,24 @@ para separar una palabra:
 
 .. raw:: html
 
-   <html>    <head><title>
+   <html>
+         <head><title>
 
 Formulario de separación
 
 .. raw:: html
 
-   </title></head>    <body>        <form action="separar.php" method="POST">         
+   </title></head>
+         <body>
+           <form action="separar.php" method="POST">
+             
 
 Ingrese una palabra: Largo de las separaciones ?
 
 .. raw:: html
 
-   </form>    </body> 
+   </form>
+         </body> 
        </html>
 
 El programa PHP para procesar dicho formulario sería el siguiente:
@@ -64,8 +69,13 @@ El programa PHP para procesar dicho formulario sería el siguiente:
 ::
 
     $word = $_POST['word']; 
-    $number = $_POST['number']; $chunks = ceil(strlen($word) / $number);    echo "The {$number}-letter chunks of '{$word}' are:<br />\n";   for ($i = 0; $i < $chunks; $i++) {    $chunk = substr($word, $i * $number, $number);
-      printf("%d: %s<br />\n", $i + 1, $chunk); }
+    $number = $_POST['number'];
+    $chunks = ceil(strlen($word) / $number);
+    echo "The {$number}-letter chunks of '{$word}' are:<br />\n";
+    for ($i = 0; $i < $chunks; $i++) {
+      $chunk = substr($word, $i * $number, $number);
+      printf("%d: %s<br />\n", $i + 1, $chunk);
+    }
 
 Páginas con auto-procesamiento
 ------------------------------
@@ -99,7 +109,7 @@ Temperature Conversion
 
 .. raw:: html
 
-   </body> 
+   </body>
        </html>
 
 Otra forma de programa decide si se debe mostrar un formulario o proceso
