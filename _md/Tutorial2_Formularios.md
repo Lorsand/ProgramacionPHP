@@ -17,15 +17,28 @@ Una solicitud POST pasa los parámetros del formulario en el cuerpo de la solici
 	}
 ## Parámetros
 Se utilizan los arreglos *$_POST*, *$_GET* y *$_FILES* para acceder a los parámetros de formulario desde el código PHP. Las llaves son los nombres de los parámetros y los valores son los valores de esos parámetros. Por ejemplo, considere la siguiente página utilizada para separar una palabra:
-	<html>	  <head><title>Formulario de separación</title></head>	  <body>	    <form action="separar.php" method="POST">	      Ingrese una palabra: <input type="text" name="word" /><br />	      Largo de las separaciones ?	      <input type="text" name="number" /><br />	      <input type="submit" value="Dividir">
-       </form>	  </body> 
+	<html>
+	  <head><title>Formulario de separación</title></head>
+	  <body>
+	    <form action="separar.php" method="POST">
+	      Ingrese una palabra: <input type="text" name="word" /><br />
+	      Largo de las separaciones ?
+	      <input type="text" name="number" /><br />
+	      <input type="submit" value="Dividir">
+	   </form>
+	  </body> 
 	</html>
 
 El programa PHP para procesar dicho formulario sería el siguiente:
 
 	$word = $_POST['word']; 
-	$number = $_POST['number'];	$chunks = ceil(strlen($word) / $number);	echo "The {$number}-letter chunks of '{$word}' are:<br />\n";	for ($i = 0; $i < $chunks; $i++) {	  $chunk = substr($word, $i * $number, $number);
-	  printf("%d: %s<br />\n", $i + 1, $chunk);	}
+	$number = $_POST['number'];
+	$chunks = ceil(strlen($word) / $number);
+	echo "The {$number}-letter chunks of '{$word}' are:<br />\n";
+	for ($i = 0; $i < $chunks; $i++) {
+	  $chunk = substr($word, $i * $number, $number);
+	  printf("%d: %s<br />\n", $i + 1, $chunk);
+	}
 ## Páginas con auto-procesamiento
 Una página PHP puede ser utilizada tanto para generar un formulario como para procesarlo.	<html>
 	  <head><title>Temperature Conversion</title></head>
@@ -43,7 +56,7 @@ El programa PHP para procesar dicho formulario sería el siguiente:
 	    } else {
 	     die("This script only works with GET and POST requests.");
 	    } ?>
-	  </body> 
+	  </body>
 	</html>
 
 Otra forma de programa decide si se debe mostrar un formulario o proceso es ver si alguno de los parámetros se ha suministrado. Esto le permite escribir una página de auto-procesamiento que utiliza el método GET para enviar valores.
