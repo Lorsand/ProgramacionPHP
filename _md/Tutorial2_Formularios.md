@@ -1,6 +1,6 @@
 # Procesamiento de formularios
 
-Es muy sencillo procesar formularios con PHP, ya que los parámetros del formulario están disponibles en los arreglos $ _GET y $ _POST.
+Es muy sencillo procesar formularios con PHP, ya que los parámetros del formulario están disponibles en los arreglos $_GET y $_POST.
 
 ## Métodos
 
@@ -40,7 +40,8 @@ El programa PHP para procesar dicho formulario sería el siguiente:
 	  printf("%d: %s<br />\n", $i + 1, $chunk);
 	}
 ## Páginas con auto-procesamiento
-Una página PHP puede ser utilizada tanto para generar un formulario como para procesarlo.	<html>
+Una página PHP puede ser utilizada tanto para generar un formulario como para procesarlo.
+	<html>
 	  <head><title>Temperature Conversion</title></head>
 	  <body>
 	    <?php if ($_SERVER['REQUEST_METHOD'] == 'GET') { ?>
