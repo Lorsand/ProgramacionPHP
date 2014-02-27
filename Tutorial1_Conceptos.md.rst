@@ -601,10 +601,9 @@ Además, existen una serie de variables predefinidas denominadas:
 -  E\_PARSE: Error no recuperable (sintaxis).
 -  E\_NOTICE: Puede Tratarse de un error o no. Normalmente permite
    continuar la ejecución.
-    Ejemplo:
 
 Todas las constantes que empiezan por "E\_"se utilizan normalmente con
-la función *error_reporting()*.
+la función *error\_reporting()*.
 
 ::
 

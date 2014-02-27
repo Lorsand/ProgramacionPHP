@@ -13,3 +13,4 @@ Contenidos
    :numbered:
 
    Tutorial1_Conceptos.md.rst
+   Tutorial2_Formularios.md.rst
