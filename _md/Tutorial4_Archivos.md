@@ -116,7 +116,7 @@ Otra forma de leer archivos de texto es utilizar la función *file*, la cual tra
 
 La función *fgetcsv* obtiene una línea del puntero a un archivo y la examina para tratar campos CSV. La función *fputcsv* da formato a una línea como CSV y la escribe en un puntero a un archivo.
 
-<?php
+	<?php
 	
 	$path = "/home/usr/data3.txt";
 	if (!file_exists($path))

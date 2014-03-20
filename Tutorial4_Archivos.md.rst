@@ -158,67 +158,22 @@ La función *fgetcsv* obtiene una línea del puntero a un archivo y la
 examina para tratar campos CSV. La función *fputcsv* da formato a una
 línea como CSV y la escribe en un puntero a un archivo.
 
-.. raw:: html
-
-   <body><table border=1>
-
-"; echo "
-
-.. raw:: html
-
-   <tr><th>
-
-Country
-
-.. raw:: html
-
-   </th><th>
-
-Area
-
-.. raw:: html
-
-   </th><th>
-
-Population
-
-.. raw:: html
-
-   </th><th>
-
-Density
-
-.. raw:: html
-
-   </th></tr>
-
-"; while (:math:`fields = fgetcsv(`\ file,",")) { echo "
-
-.. raw:: html
-
-   <tr><td>
-
-".:math:`fields[0]."</td><td>".`\ fields[1]."
-
-.. raw:: html
-
-   </td><td>
-
-". :math:`fields[2]."</td><td>".`\ fields[3]."
-
-.. raw:: html
-
-   </td></tr>
-
-"; } echo "
-
-.. raw:: html
-
-   </table></body></html>
-
-"; fclose($file);
-
 ::
+
+    <?php
+
+    $path = "/home/usr/data3.txt";
+    if (!file_exists($path))
+        exit("File not found");
+    $file = fopen($path, "r");
+    echo "<html><body><table border=1>";
+    echo "<tr><th>Country</th><th>Area</th><th>Population</th><th>Density</th></tr>";
+    while ($fields = fgetcsv($file,",")) {
+        echo "<tr><td>".$fields[0]."</td><td>".$fields[1]."</td><td>".
+             $fields[2]."</td><td>".$fields[3]."</td></tr>";
+    }
+    echo "</table></body></html>";
+    fclose($file);
 
     ?>
 
