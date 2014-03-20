@@ -58,18 +58,87 @@ La función *is_dir* indica si el nombre del archivo es un directorio y *is_file
 
 ## Archivos binarios
 
-Las funciones *fread* y *fwrite* leen y escriben, respectivamente, en un archivo en modo binario. La función *fseek* busca sobre un puntero de un archivo.
+Las funciones *fread* y *fwrite* leen y escriben, respectivamente, en un archivo en modo binario. La función *fseek* posiciona el puntero del archivo.
+
+	<?php
+	
+	$path = "/home/usr/data2.txt";
+	if (!file_exists($path))
+		exit("File not found");
+	$file = fopen($path, "r");
+	echo "<html><body><table border=1>";
+	echo "<tr><th>Country</th><th>Area</th><th>Population</th><th>Density</th></tr>";
+	fseek($file,35);
+	while ($data = fread($file, 35)) {
+	    $fields = explode("|",$data);
+	    echo "<tr><td>".$fields[0]."</td><td>".$fields[1]."</td><td>".
+			 $fields[2]."</td><td>".$fields[3]."</td></tr>";
+	}
+	echo "</table></body></html>";
+	fclose($file);
+	
+	?>
+
+El archivo de datos para el ejemplo anterior podría ser el siguiente. Note que este es un archivo de registros de tamaño fijo. Además, tome en cuenta que es necesario omitir los encabezados del archivo.
+
+	CountryName|Area  |People  |Densi.
+	Belice     | 22966|  334000| 14.54
+	Costa Rica | 51100| 4726000| 92.49
+	El Salvador| 21041| 6108000|290.29
+	Guatemala  |108894|15284000|140.36
+	Honduras   |112492| 8447000| 75.09
+	Nicaragua  |129494| 6028000| 46.55
+	Panama     | 78200| 3652000| 46.70
 
 ## Archivos de texto
 
-De igual forma la función *file* transfiere un archivo completo a un arreglo.
+Otra forma de leer archivos de texto es utilizar la función *file*, la cual transfiere un archivo completo a un arreglo. Note que no es necesario abrir el archivo (*fopen*) para utilizar este función.
 
-Las funciones *file_get_contents* y *file_put_contents* permiten leer y escribir, respectivamente, el contenido completo de un archivo hacia/desde una cadena de texto (string).
+	<?php
+	
+	$path = "/home/usr/data2.txt";
+	if (!file_exists($path))
+		exit("File not found");
+	$rows = file($path);
+	echo "<html><body><table border=1>";
+	echo "<tr><th>Country</th><th>Area</th><th>Population</th><th>Density</th></tr>";
+	for ($row in $rows) {
+	    $fields = explode("|",$row);
+	    echo "<tr><td>".$fields[0]."</td><td>".$fields[1]."</td><td>".
+			 $fields[2]."</td><td>".$fields[3]."</td></tr>";
+	}
+	echo "</table></body></html>";
+	fclose($file);
+	
+	?>
 
 ## Archivos CSV
 
 La función *fgetcsv* obtiene una línea del puntero a un archivo y la examina para tratar campos CSV. La función *fputcsv* da formato a una línea como CSV y la escribe en un puntero a un archivo.
 
-## Archivos JSON
+<?php
+	
+	$path = "/home/usr/data3.txt";
+	if (!file_exists($path))
+		exit("File not found");
+	$file = fopen($path, "r");
+	echo "<html><body><table border=1>";
+	echo "<tr><th>Country</th><th>Area</th><th>Population</th><th>Density</th></tr>";
+	while ($fields = fgetcsv($file,",")) {
+	    echo "<tr><td>".$fields[0]."</td><td>".$fields[1]."</td><td>".
+			 $fields[2]."</td><td>".$fields[3]."</td></tr>";
+	}
+	echo "</table></body></html>";
+	fclose($file);
+	
+	?>
 
-## Archivos XML
+El archivo de datos para el ejemplo anterior podría ser el siguiente.
+
+	Belice,22966,334000,14.54
+	Costa Rica,51100,4726000,92.49
+	El_Salvador,21041,6108000,290.29
+	Guatemala,108894,15284000,140.36
+	Honduras,112492,8447000,75.09
+	Nicaragua,129494,6028000,46.55
+	Panama,78200,3652000,46.70
