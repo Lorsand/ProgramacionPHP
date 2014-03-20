@@ -15,3 +15,4 @@ Contenidos
    Tutorial1_Conceptos.md.rst
    Tutorial2_Formularios.md.rst
    Tutorial3_Sesiones.md.rst
+   Tutorial4_Archivos.md.rst
