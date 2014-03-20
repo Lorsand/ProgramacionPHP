@@ -2,7 +2,7 @@
   $number = $_POST['number'];
   if (isset($number)) {
 	 $count = intval($_COOKIE['count']);
-	 setcookie('number'.$count,$number);
+	 setcookie('number['.$count.']',$number);
 	 $count++;
   } else {
 	foreach ($_COOKIE as $key => $value )
@@ -24,7 +24,7 @@
 	      } else {
 		    echo "<label>Your winning numbers are: </label>";
 		    for ($i = 0; $i < $count-1; $i++)
-				echo "<b>".$_COOKIE['number'.$i]."</b>, ";
+				echo "<b>".$_COOKIE['number['.$i.']]."</b>, ";
 			echo "<b>$number</b></p>";
 		  }
 		  if ($count == 6) {
