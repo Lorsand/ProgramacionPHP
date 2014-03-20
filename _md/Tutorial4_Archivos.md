@@ -98,17 +98,17 @@ Otra forma de leer archivos de texto es utilizar la función *file*, la cual tra
 	
 	$path = "/home/usr/data2.txt";
 	if (!file_exists($path))
-		exit("File not found");
+	    exit("File not found");
 	$rows = file($path);
+	array_shift($rows);
 	echo "<html><body><table border=1>";
 	echo "<tr><th>Country</th><th>Area</th><th>Population</th><th>Density</th></tr>";
-	for ($row in $rows) {
+	foreach ($rows as $row) {
 	    $fields = explode("|",$row);
 	    echo "<tr><td>".$fields[0]."</td><td>".$fields[1]."</td><td>".
-			 $fields[2]."</td><td>".$fields[3]."</td></tr>";
+	         $fields[2]."</td><td>".$fields[3]."</td></tr>";
 	}
 	echo "</table></body></html>";
-	fclose($file);
 	
 	?>
 
@@ -118,7 +118,7 @@ La función *fgetcsv* obtiene una línea del puntero a un archivo y la examina p
 
 	<?php
 	
-	$path = "/home/usr/data3.txt";
+	$path = "/home/usr/data3.csv";
 	if (!file_exists($path))
 		exit("File not found");
 	$file = fopen($path, "r");
@@ -137,7 +137,7 @@ El archivo de datos para el ejemplo anterior podría ser el siguiente.
 
 	Belice,22966,334000,14.54
 	Costa Rica,51100,4726000,92.49
-	El_Salvador,21041,6108000,290.29
+	El Salvador,21041,6108000,290.29
 	Guatemala,108894,15284000,140.36
 	Honduras,112492,8447000,75.09
 	Nicaragua,129494,6028000,46.55
