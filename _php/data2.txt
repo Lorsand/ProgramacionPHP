@@ -1,0 +1,8 @@
+CountryName|Area  |People  |Densi.
+Belice     | 22966|  334000| 14.54
+Costa Rica | 51100| 4726000| 92.49
+El Salvador| 21041| 6108000|290.29
+Guatemala  |108894|15284000|140.36
+Honduras   |112492| 8447000| 75.09
+Nicaragua  |129494| 6028000| 46.55
+Panama     | 78200| 3652000| 46.70
