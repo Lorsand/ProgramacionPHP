@@ -2,7 +2,7 @@
 
 La extensión PDO (PHP Data Objects) de PHP consiste de una capa de abstracción para acceder a diferentes tipos de bases de datos. Utilizando PDO se logran estandarizar los diferentes mecanismos para realizar la conexión a una base de datos, así como recuperar y modificar información. Sin embargo, PDO no estandariza SQL lo que significa que se debe lidiar con las diferentes sintaxis de las instrucciones en cada administrador de bases de datos.
 
-## Drivers de bases de datos
+## Manejadores de bases de datos
 
 Para cada base de datos existe un manejador (driver) específico, que debe estar habilitado en el archivo de configuración de PHP (el archivo *php.ini*). Los manejadores se administran mediante extensiones de PHP, las cuales tienen nombres finalizando con *dll* en Windows y con *so* en Unix.
 
@@ -53,9 +53,8 @@ Debido a que no todas las bases de datos soportan transacciones, PHP corre en el
 	  die("Unable to connect: " . $e->getMessage());
 	}
 	
-	try {  
-	  $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-	
+	try {
+
 	  $dbh->beginTransaction();
 	  $dbh->exec("INSERT INTO countries (name, area, population, density) 
 	                          values ('Belice',22966,334000,14.54)");
@@ -89,9 +88,7 @@ Una *instrucción preparada* es un tipo de plantilla para SQL que puede ser pers
 	  die("Unable to connect: " . $e->getMessage());
 	}
 	
-	try {  
-	  $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-	
+	try {
 	  $stmt = $dbh->prepare("INSERT INTO countries (name, area, population, density) 
 		                            VALUES (:name, :area, :population, :density)");
 	  $stmt->bindParam(':name', $name);
@@ -104,6 +101,62 @@ Una *instrucción preparada* es un tipo de plantilla para SQL que puede ser pers
 	  $stmt->execute();
 	  $name = 'Panama'; $area = 78200; $population = 3652000; $density = 46.70;
 	  $stmt->execute();
+	  $dbh->commit();
+	  
+	} catch (Exception $e) {
+	  $dbh->rollBack();
+	  echo "Failed: " . $e->getMessage();
+	}
+	?>
+
+Otra forma de hacer el enlace de variables es por posición y no por nombre.
+
+	<?php
+	try {
+	  $dbh = new PDO('sqlite:test.db');
+	  echo "Connected\n";
+	} catch (Exception $e) {
+	  die("Unable to connect: " . $e->getMessage());
+	}
+	
+	try {
+	  $stmt = $dbh->prepare("INSERT INTO countries (name, area, population, density) 
+		                            VALUES (?, ?, ?, ?)");
+	  $stmt->bindParam(1, $name);
+	  $stmt->bindParam(2, $area);
+	  $stmt->bindParam(3, $population);
+	  $stmt->bindParam(4, $density);
+	  
+	  $dbh->beginTransaction();
+	  $name = 'Nicaragua'; $area = 129494; $population = 602800; $density = 46.55;
+	  $stmt->execute();
+	  $name = 'Panama'; $area = 78200; $population = 3652000; $density = 46.70;
+	  $stmt->execute();
+	  $dbh->commit();
+	  
+	} catch (Exception $e) {
+	  $dbh->rollBack();
+	  echo "Failed: " . $e->getMessage();
+	}
+	?>
+
+Adicionalmente, es posible utilizar un arreglo para pasar los parámetros de la consulta. En este caso no es necesario incluir el enlace (bind) de parámetros. Es importante notar que el orden de los parámetros resulta vital aquí.
+
+	<?php
+	try {
+	  $dbh = new PDO('sqlite:test.db');
+	  echo "Connected\n";
+	} catch (Exception $e) {
+	  die("Unable to connect: " . $e->getMessage());
+	}
+	
+	try {
+	  $stmt = $dbh->prepare("INSERT INTO countries (name, area, population, density) 
+		                            VALUES (?, ?, ?, ?)");
+	  
+	  $dbh->beginTransaction();
+	  $stmt->execute(array('Nicaragua', 129494, 602800, 46.55));
+	  $stmt->execute(array('Panama', 78200, 3652000, 46.70));
 	  $dbh->commit();
 	  
 	} catch (Exception $e) {

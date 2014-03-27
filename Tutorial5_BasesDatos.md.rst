@@ -9,8 +9,8 @@ información. Sin embargo, PDO no estandariza SQL lo que significa que se
 debe lidiar con las diferentes sintaxis de las instrucciones en cada
 administrador de bases de datos.
 
-Drivers de bases de datos
--------------------------
+Manejadores de bases de datos
+-----------------------------
 
 Para cada base de datos existe un manejador (driver) específico, que
 debe estar habilitado en el archivo de configuración de PHP (el archivo
@@ -97,8 +97,7 @@ transacción.
       die("Unable to connect: " . $e->getMessage());
     }
 
-    try {  
-      $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    try {
 
       $dbh->beginTransaction();
       $dbh->exec("INSERT INTO countries (name, area, population, density) 
@@ -143,9 +142,7 @@ agregarlas a la instrucción.
       die("Unable to connect: " . $e->getMessage());
     }
 
-    try {  
-      $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
+    try {
       $stmt = $dbh->prepare("INSERT INTO countries (name, area, population, density) 
                                     VALUES (:name, :area, :population, :density)");
       $stmt->bindParam(':name', $name);
@@ -158,6 +155,70 @@ agregarlas a la instrucción.
       $stmt->execute();
       $name = 'Panama'; $area = 78200; $population = 3652000; $density = 46.70;
       $stmt->execute();
+      $dbh->commit();
+      
+    } catch (Exception $e) {
+      $dbh->rollBack();
+      echo "Failed: " . $e->getMessage();
+    }
+    ?>
+
+Otra forma de hacer el enlace de variables es por posición y no por
+nombre.
+
+::
+
+    <?php
+    try {
+      $dbh = new PDO('sqlite:test.db');
+      echo "Connected\n";
+    } catch (Exception $e) {
+      die("Unable to connect: " . $e->getMessage());
+    }
+
+    try {
+      $stmt = $dbh->prepare("INSERT INTO countries (name, area, population, density) 
+                                    VALUES (?, ?, ?, ?)");
+      $stmt->bindParam(1, $name);
+      $stmt->bindParam(2, $area);
+      $stmt->bindParam(3, $population);
+      $stmt->bindParam(4, $density);
+      
+      $dbh->beginTransaction();
+      $name = 'Nicaragua'; $area = 129494; $population = 602800; $density = 46.55;
+      $stmt->execute();
+      $name = 'Panama'; $area = 78200; $population = 3652000; $density = 46.70;
+      $stmt->execute();
+      $dbh->commit();
+      
+    } catch (Exception $e) {
+      $dbh->rollBack();
+      echo "Failed: " . $e->getMessage();
+    }
+    ?>
+
+Adicionalmente, es posible utilizar un arreglo para pasar los parámetros
+de la consulta. En este caso no es necesario incluir el enlace (bind) de
+parámetros. Es importante notar que el orden de los parámetros resulta
+vital aquí.
+
+::
+
+    <?php
+    try {
+      $dbh = new PDO('sqlite:test.db');
+      echo "Connected\n";
+    } catch (Exception $e) {
+      die("Unable to connect: " . $e->getMessage());
+    }
+
+    try {
+      $stmt = $dbh->prepare("INSERT INTO countries (name, area, population, density) 
+                                    VALUES (?, ?, ?, ?)");
+      
+      $dbh->beginTransaction();
+      $stmt->execute(array('Nicaragua', 129494, 602800, 46.55));
+      $stmt->execute(array('Panama', 78200, 3652000, 46.70));
       $dbh->commit();
       
     } catch (Exception $e) {
