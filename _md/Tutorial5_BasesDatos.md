@@ -78,7 +78,7 @@ Si una transacción no fue terminada con la instrucción *commit* y el programa 
 
 ## Instrucciones preparadas
 
-Una *instrucción preparada* es un tipo de plantilla para SQL que puede ser personalizada utilizando parámetros. Existen dos beneficios de utilizar *instrucciones preparadas*: la base de datos únicamente compilará una vez la instrucción lo cual ahorra mucho tiempo, y los parámetros no necesitan *comillas* ya que el manejador se encarga de agregarlas a la instrucción.
+Una *instrucción preparada* es un tipo de plantilla para SQL que puede ser personalizada utilizando parámetros. Existen dos beneficios de utilizar *instrucciones preparadas* : la base de datos únicamente compilará una vez la instrucción lo cual ahorra mucho tiempo, y los parámetros no necesitan *comillas* ya que el manejador se encarga de agregarlas a la instrucción. El realizar el enlace (bind) de parámetros se puede realizar por mediante el nombre del parámetro o por posición (utilizando el símbolo ?).
 
 	<?php
 	try {
@@ -95,37 +95,6 @@ Una *instrucción preparada* es un tipo de plantilla para SQL que puede ser pers
 	  $stmt->bindParam(':area', $area);
 	  $stmt->bindParam(':population', $population);
 	  $stmt->bindParam(':density', $density);
-	  
-	  $dbh->beginTransaction();
-	  $name = 'Nicaragua'; $area = 129494; $population = 602800; $density = 46.55;
-	  $stmt->execute();
-	  $name = 'Panama'; $area = 78200; $population = 3652000; $density = 46.70;
-	  $stmt->execute();
-	  $dbh->commit();
-	  
-	} catch (Exception $e) {
-	  $dbh->rollBack();
-	  echo "Failed: " . $e->getMessage();
-	}
-	?>
-
-Otra forma de hacer el enlace de variables es por posición y no por nombre.
-
-	<?php
-	try {
-	  $dbh = new PDO('sqlite:test.db');
-	  echo "Connected\n";
-	} catch (Exception $e) {
-	  die("Unable to connect: " . $e->getMessage());
-	}
-	
-	try {
-	  $stmt = $dbh->prepare("INSERT INTO countries (name, area, population, density) 
-		                            VALUES (?, ?, ?, ?)");
-	  $stmt->bindParam(1, $name);
-	  $stmt->bindParam(2, $area);
-	  $stmt->bindParam(3, $population);
-	  $stmt->bindParam(4, $density);
 	  
 	  $dbh->beginTransaction();
 	  $name = 'Nicaragua'; $area = 129494; $population = 602800; $density = 46.55;
@@ -199,24 +168,36 @@ Si se produce un error, la instrucción *fetch* retornará *FALSE*.
 	?>
 	</html>
 	
-Por su parte la instrucción *PDOStatement::fetchAll* retornará un arreglo conteniendo todos las filas de un conjunto de resultados. El arreglo representa cada columna como un arreglo de valores por columnas o un objeto en donde las propiedades corresponden a los nombres de las columnas. Esta instrucción cuenta con varios modos al igual que la instrucción *fetch*, e inclusive se pueden especificar las columnas que se desean recuperar. Se retorna un arreglo vacío si no existen resultados, o *FALSE* si la consulta falla. 
+Por su parte la instrucción *PDOStatement::fetchAll* retornará un arreglo conteniendo todos las filas de un conjunto de resultados. El arreglo representa cada columna como un arreglo de valores por columnas o un objeto en donde las propiedades corresponden a los nombres de las columnas. Esta instrucción cuenta con varios modos al igual que la instrucción *fetch*, e inclusive se pueden especificar las columnas que se desean recuperar. Se retorna un arreglo vacío si no existen resultados, o *FALSE* si la consulta falla.
 
-	<?php
-	try {
-	  $dbh = new PDO('sqlite:test.db');
-	} catch (Exception $e) {
-	  die("Unable to connect: " . $e->getMessage());
-	}
-	
-	try {
-		$sth = $dbh->prepare("SELECT * FROM countries");
-		$sth->execute();
-		$result = $sth->fetchAll(PDO::FETCH_ASSOC);
-		foreach ($result as $row) {
-		  print_r($row);
-		  print("\n");
-	    }
-	} catch (Exception $e) {
-	  echo "Failed: " . $e->getMessage();
-	}
-	?>
+El siguiente ejemplo muestra el uso de la instrucción *fetchAll* , y al mismo tiempo se muestra una forma de recuperar los datos cuando no se conocen de antemano los nombres de las columnas ni la cantidad de ellas.
+
+	<html>
+		<?php
+		try {
+		  $dbh = new PDO('sqlite:test.db');
+		} catch (Exception $e) {
+		  die("Unable to connect: " . $e->getMessage());
+		}
+		
+		try {
+			$sth = $dbh->prepare("SELECT * FROM countries");
+			$sth->execute();
+			echo "<table border=1><tr>";
+			$result = $sth->fetchAll(PDO::FETCH_ASSOC);
+			$keys = array_keys($result[0]);
+			foreach ($keys as $key)
+			  echo "<th>".$key."</th>";
+			echo "</tr>";
+			foreach ($result as $row) {
+			  echo "<tr>";
+			  foreach ($keys as $key)
+				  echo "<td>".$row[$key]."</td>";
+			  echo "</tr>";
+		    }
+			echo "</table>";
+		} catch (Exception $e) {
+		  echo "Failed: " . $e->getMessage();
+		}
+		?>
+	</html>
