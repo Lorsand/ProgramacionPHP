@@ -175,24 +175,29 @@ El método *PDOStatement::fetch* permite obtener la siguiente fila de un conjunt
 
 Si se produce un error, la instrucción *fetch* retornará *FALSE*.
 
+	<html>
 	<?php
 	try {
 	  $dbh = new PDO('sqlite:test.db');
 	} catch (Exception $e) {
 	  die("Unable to connect: " . $e->getMessage());
 	}
-	
 	try {
 		$sth = $dbh->prepare("SELECT * FROM countries");
 		$sth->execute();
+		echo "<table border=1>";
+		echo "<tr><th>Country</th><th>Area</th><th>People</th><th>Dens.</th></tr>";
 		while ($result = $sth->fetch(PDO::FETCH_ASSOC)) {
-		  print_r($result);
-		  print("\n");
+			echo "<tr><td>".$result['name']."</td><td>".$result['area'].
+				"</td><td>".$result['population']."</td><td>".$result['density'].
+				"</td></tr>";
 	    }
+		echo "</table>";
 	} catch (Exception $e) {
 	  echo "Failed: " . $e->getMessage();
 	}
 	?>
+	</html>
 	
 Por su parte la instrucción *PDOStatement::fetchAll* retornará un arreglo conteniendo todos las filas de un conjunto de resultados. El arreglo representa cada columna como un arreglo de valores por columnas o un objeto en donde las propiedades corresponden a los nombres de las columnas. Esta instrucción cuenta con varios modos al igual que la instrucción *fetch*, e inclusive se pueden especificar las columnas que se desean recuperar. Se retorna un arreglo vacío si no existen resultados, o *FALSE* si la consulta falla. 
 
