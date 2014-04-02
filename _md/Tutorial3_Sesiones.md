@@ -162,7 +162,11 @@ Si es posible modificar dinámicamente todos los enlaces locales para incluir un
 
 ## Ejemplo
 
-A continuación se muestra un ejemplo programado de una aplicación Web en PHP que permite llevar una lista de eventos. Cada evento tiene una fecha, hora, y asunto. Se pueden agregar nuevos eventos o eliminar los existentes. En este caso se utilizaron "cookies" para solucionarlo, sin embargo, la implementación utilizando campos ocultos o variables de sesión resulta muy similar.
+A continuación se muestra un ejemplo programado de una aplicación Web en PHP que permite llevar una lista de eventos. Cada evento tiene una fecha, hora, y asunto. Se pueden agregar nuevos eventos o eliminar los existentes. 
+
+![](Eventos.png)
+
+En este caso se utilizaron "cookies" para solucionarlo, sin embargo, la implementación utilizando campos ocultos o variables de sesión resulta muy similar.
 
 	<?php
 	  if (isset($_COOKIE['eventos'])) { 

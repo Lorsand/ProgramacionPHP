@@ -237,9 +237,14 @@ Ejemplo
 A continuación se muestra un ejemplo programado de una aplicación Web en
 PHP que permite llevar una lista de eventos. Cada evento tiene una
 fecha, hora, y asunto. Se pueden agregar nuevos eventos o eliminar los
-existentes. En este caso se utilizaron "cookies" para solucionarlo, sin
-embargo, la implementación utilizando campos ocultos o variables de
-sesión resulta muy similar.
+existentes.
+
+.. figure:: Eventos.png
+   :alt: 
+
+En este caso se utilizaron "cookies" para solucionarlo, sin embargo, la
+implementación utilizando campos ocultos o variables de sesión resulta
+muy similar.
 
 ::
 
