@@ -189,3 +189,123 @@ El archivo de datos para el ejemplo anterior podría ser el siguiente.
     Nicaragua,129494,6028000,46.55
     Panama,78200,3652000,46.70
 
+Ejemplo
+-------
+
+A continuación se muestra un ejemplo de una aplicación Web en PHP que
+permite llevar una lista de contactos. Cada contacto tiene un nombre,
+teléfono del trabajo, teléfono móvil, dirección electrónica y dirección
+postal. Se pueden agregar nuevos contactos, modificar los existentes, o
+eliminarlos.
+
+.. figure:: Agenda.png
+   :alt: 
+
+Note que se utiliza *borrado perezoso* en esta solución, es decir, se
+marcan los registros borrados y no se eliminan realmente del archivo.
+También, en este ejemplo se utiliza un archivo con registros de tamaño
+fijo delimitados por el carácter '\|'.
+
+::
+
+    <?php
+    $path = "data.txt";
+    if (file_exists($path))
+      $file = fopen($path, "r+");
+    else
+      $file = fopen($path, "a+");
+    while ($data = fread($file,154)) {
+      $array[] = explode('|',$data);
+    };
+
+    if (isset($_GET['get'])) {
+      $curr = (int)$_GET['get'];
+      $item = $array[$curr];
+    } else if (isset($_GET['delete'])) {
+      $curr = (int)$_GET['delete'];
+      fseek($file,$curr*154,SEEK_SET);
+      fwrite($file,'**deleted**');
+      $array[$curr][0] = '**deleted**';
+      $item = array('','','','','');
+      $curr = 0;
+    } else if (isset($_GET['save'])) {
+        $curr = (int)$_GET['save'];
+        $item = array(str_pad($_GET['name'],30),
+                      str_pad($_GET['work'],30),
+                      str_pad($_GET['mobile'],30),
+                      str_pad($_GET['email'],30),
+                      str_pad($_GET['address'],30));
+        fseek($file,$curr*154,SEEK_SET);
+        fwrite($file,implode('|',$item));
+        $array[$curr] = $item;
+    } else if (isset($_GET['append'])) {
+      $item = array('','','','','');
+      $curr = sizeof($array);
+    };
+
+    fclose($file);
+    ?>
+    <html>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <head>
+            <title>Contacts</title>
+        </head>
+        <body>
+         <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="GET">
+          <div style="width: 250px; float: left;">
+            <h3>All Contacts</h3>
+            <table width="150" border=1>
+              <?php
+                for ($i=0;$i<sizeof($array);$i++) {
+                  if (trim($array[$i][0])!="**deleted**")
+                    echo '<tr><td><a href="?get='.$i.
+                         '" style="text-decoration:none;">'.
+                         $array[$i][0].'</a></td></tr>';
+                }
+              ?>
+            </table>
+            </p>
+            <button name="append" value="">+</button>
+          </div>
+          <div style="margin-left:250px;">
+              <table>
+                <tr><td>&nbsp;</td></tr>
+                <tr><td><label>name</label></td><td>
+                    <input name="name" size="30" value="<?php echo $item[0]; ?>"/></td></tr>
+                <tr><td><label>work</label></td><td>
+                    <input name="work" size="30" value="<?php echo $item[1]; ?>"/></td></tr>
+                <tr><td><label>mobile</label></td><td>
+                    <input name="mobile" size="30" value="<?php echo $item[2]; ?>"/></td></tr>
+                <tr><td><label>email</label></td><td>
+                    <input name="email" size="30" value="<?php echo $item[3]; ?>"/></td></tr>
+                <tr><td><label>address</label></td><td>
+                    <input name="address" size="30" value="<?php echo $item[4]; ?>"/></td></tr>
+                <tr><td>&nbsp;</td></tr>
+                <tr><td><button name="delete" value="<?php echo $curr; ?>">-</button></td>
+                    <td align="right">
+                    <button name="save" value="<?php echo $curr; ?>">Save</button></td></tr>
+              </table>
+            </div>
+          </form>
+        </body>
+    </html>
+
+Ejercicios
+----------
+
+1. Intente modificar el ejemplo anterior para que utilice dos archivos,
+   uno que almacene el nombre del contacto y un índice. Este índice
+   indicará la posición en otro archivo en donde se encontrará el
+   detalle del contacto.
+
+2. Ahora, intente modificar el ejemplo para resolver el mismo problema
+   pero utilizando registros de tamaño variable. Trate de solucionar de
+   una forma 'elegante' el borrado de registros.
+
+3. Debido a que cada vez que se ejecuta la aplicación es necesario
+   cargar todo el archivo en memoria, una mejor solución sería 'paginar'
+   los registros, es decir, cargar solo una pequeña parte en memoria y
+   permitir que el usuario cargara más registros conforme los necesite
+   (posiblemente mediante un par de botones adicionales).
+
+

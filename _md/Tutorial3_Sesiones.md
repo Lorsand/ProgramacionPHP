@@ -166,11 +166,11 @@ A continuación se muestra un ejemplo programado de una aplicación Web en PHP q
 
 ![](Eventos.png)
 
-En este caso se utilizaron "cookies" para solucionarlo, sin embargo, la implementación utilizando campos ocultos o variables de sesión resulta muy similar.
+En este caso se utilizan "cookies" para resolver el problema. Note como se crea un hilera de texto (string) con los diferentes campos a almacenar utilizando como delimitador el carácter '|', y luego se genera otra hilera de texto con todos los eventos del arreglo pero ahora delimitados por los caracteres '/n'. Esta última hilera de texto es la que se almacena en la 'cookie'.
 
 	<?php
 	  if (isset($_COOKIE['eventos'])) { 
-	    $array = split("/n",$_COOKIE['eventos']);
+	    $array = explode("/n",$_COOKIE['eventos']);
 	  }  else {
 	    $array = array();
 	  };
@@ -216,3 +216,9 @@ En este caso se utilizaron "cookies" para solucionarlo, sin embargo, la implemen
 		  </form>
 		</body>
 	</html>
+	
+## Ejercicios
+
+1. Intente modificar el ejemplo anterior para manejar los eventos mediante campos ocultos.
+
+2. Ahora, intente modificar el mismo ejemplo para almacenar los objetos mediante variables de sesión.
