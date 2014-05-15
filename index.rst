@@ -17,3 +17,4 @@ Contenidos
    Tutorial3_Sesiones.md.rst
    Tutorial4_Archivos.md.rst
    Tutorial5_BasesDatos.md.rst
+   Tutorial7_XML-JSON.md.rst
