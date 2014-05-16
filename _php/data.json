@@ -1,0 +1,8 @@
+{"countries": [{"name":"Belice","area":"22966","people":"334000","density":"14.54"},
+   {"name":"Costa Rica","area":"51100","people":"4726000","density":"92.49"},
+   {"name":"El Salvador","area":"21041","people":"6108000","density":"290.29"},
+   {"name":"Guatemala","area":"108894","people":"15284000", "density":"140.36"},
+   {"name":"Honduras","area":"112492","people":"8447000", "density":"75.09"},
+   {"name":"Nicaragua","area":"129494","people":"6028000","density":"46.55"},
+   {"name":"Panama", "area":"78200","people":"3652000","density":"46.70"}
+ ]}

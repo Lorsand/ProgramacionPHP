@@ -92,4 +92,62 @@ El siguiente programa escribe una serie de datos al archivo XML de países:
 	
 	?>
 
-## Uso de JSON
+## Lectura de datos JSON
+
+El método utilizado por PHP para tratar datos JSON es simplemente convertir hileras de texto (string) en formato JSON a arreglos de PHP. Para ello se utiliza la función *json_decode(string)* la cual recibe dicha hilera de texto y retorna el arreglo.
+
+Por ejemplo considere el siguiente archivo de datos en formato JSON:
+
+	{"countries": [{"name":"Belice","area":"22966","people":"334000","density":"14.54"},
+	   {"name":"Costa Rica","area":"51100","people":"4726000","density":"92.49"},
+	   {"name":"El Salvador","area":"21041","people":"6108000","density":"290.29"},
+	   {"name":"Guatemala","area":"108894","people":"15284000", "density":"140.36"},
+	   {"name":"Honduras","area":"112492","people":"8447000", "density":"75.09"},
+	   {"name":"Nicaragua","area":"129494","people":"6028000","density":"46.55"},
+	   {"name":"Panama", "area":"78200","people":"3652000","density":"46.70"}
+	 ]}
+
+Un programa para leer el anterior archivo y generar una tabla HTML con dicha información, sería el siguiente:
+
+	<?php 
+	
+	$path = "/Users/xxx/data.json";
+	
+	if (!file_exists($path))
+	    exit("File not found");
+	
+	$data = file_get_contents($path);
+	$json = json_decode($data, true);
+	
+	echo "<html><body><table border=1>";
+	echo "<tr><th>Country</th><th>Area</th><th>Population</th><th>Density</th></tr>";
+	foreach ($json['countries'] as $row) {
+	    echo "<tr><td>".$row['name']."</td><td>".$row['area']."</td><td>".
+	         $row['people']."</td><td>".$row['density']."</td></tr>";
+	}
+	echo "</table></body></html>";
+	
+	?>
+	
+## Escritura de datos JSON
+
+De igual forma para escribir datos en formato JSON, PHP utiliza la función *json_encode(arras)* la cual recibe un arreglo de PHP y retorna una hilera de texto en formato JSON.
+
+El siguiente programa genera parte del archivo de datos de países en formato JSON:
+
+	<?php 
+	
+	$path = "/Users/xxx/data2.json";
+	$file = fopen($path, "w");
+	
+	$countries = array(
+		array("name"=>"Belice","area"=>"22966","people"=>"334000","density"=>"14.54"),
+		array("name"=>"Costa Rica","area"=>"51100","people"=>"4726000","density"=>"92.49")
+	); 
+	
+	$json = json_encode($countries);
+	fwrite($file, $json);
+	fclose($file);
+	
+	?>
+
