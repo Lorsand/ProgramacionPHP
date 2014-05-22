@@ -186,7 +186,7 @@ Sin embargo para invocar esta función del servicio web, desde otro programa PHP
 	<?php
 	$name='Nicaragua';
 	
-	$url = 'http://localhost/tarea/Example10_2.php/country/'.$name;
+	$url = 'http://localhost/prueba.php/country/'.$name;
 	$data = array('name'=>'Nicaragua','area'=>'129000',
 	              'population'=>'6548000','density' => '46.55');
 	$options = array(
@@ -202,8 +202,4 @@ Sin embargo para invocar esta función del servicio web, desde otro programa PHP
 	
 	echo $result;
 	?>
-
-## Borrado de datos
-
-El método *DELETE* permite eliminar elementos cuando se utiliza el protocolo *RESTfull*
 
