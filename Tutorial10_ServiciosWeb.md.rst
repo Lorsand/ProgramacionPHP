@@ -1,284 +1,262 @@
-Bases de datos con PDO
-======================
+Servicios Web tipo RESTfull
+===========================
 
-La extensión PDO (PHP Data Objects) de PHP consiste de una capa de
-abstracción para acceder a diferentes tipos de bases de datos.
-Utilizando PDO se logran estandarizar los diferentes mecanismos para
-realizar la conexión a una base de datos, así como recuperar y modificar
-información. Sin embargo, PDO no estandariza SQL lo que significa que se
-debe lidiar con las diferentes sintaxis de las instrucciones en cada
-administrador de bases de datos.
-
-Manejadores de bases de datos
------------------------------
-
-Para cada base de datos existe un manejador (driver) específico, que
-debe estar habilitado en el archivo de configuración de PHP (el archivo
-*php.ini*). Los manejadores se administran mediante extensiones de PHP,
-las cuales tienen nombres finalizando con *dll* en Windows y con *so* en
-Unix.
+La librería *ToroPHP* permite la creación de servicios web tipo RESTfull
+de forma sencilla y eficiente en PHP. Esta se encuentra disponible en
+http://toroweb.org. Una vez que se descarga el archivo *Toro.php* éste
+puede ser probado utilizando un pequeño programa de ejemplo, llamado
+*prueba.php*:
 
 ::
 
-    extension=php_pdo.dll
-    extension=php_pdo_firebird.dll
-    extension=php_pdo_informix.dll
-    extension=php_pdo_mssql.dll
-    extension=php_pdo_mysql.dll
-    extension=php_pdo_oci.dll
-    extension=php_pdo_oci8.dll
-    extension=php_pdo_odbc.dll
-    extension=php_pdo_pgsql.dll
-    extension=php_pdo_sqlite.dll
+    <?php
 
-Todas estas extensiones deben existir en el directorio de *extensiones*
-de PHP. Generalmente las extensiones *php\_pdo* y *php\_pdo\_sqlite*
-estarán habilitadas por omisión.
+    require("Toro.php");
 
-Conexiones
-----------
+    class HelloHandler {
+        function get() {
+            echo "Hello, world";
+        }
+    }
 
-Para realizar una nueva conexión se debe crear una instancia del objeto
-*PDO*. Este constructor acepta una serie de parámetros de conexión
-(string de conexión) que pueden ser específicos para cada sistema de
-bases de datos.
+    Toro::serve(array(
+        "/" => "HelloHandler",
+    ));
 
-Si no se logra establecer la conexión se producirá una excepción
-(PDOException). Si la conexión es exitosa, una instancia de *PDO* será
-devuelta. La conexión permanece activa por todo le ciclo de vida del
-objeto *PDO*. Para cerrar la conexión, se debe destruir el objeto
-asegurándose que toda referencia sea eliminada, o bien, PHP cerrará la
-conexión automáticamente cuando el programa finalice.
+    ?>
 
-Si se desea hacer una conexión persistente, que no sea eliminada al
-final de la ejecución del programa, es necesario habilitar la opción
-*PDO:ATTR\_PERSISTENT* en el arreglo de las opciones de la conexión.
+Dicho programa se puede ejecutar mediante el url
+*http://localhost/webservice/prueba.php/*
+
+Consulta de datos
+-----------------
+
+En el protocolo *RESTfull* se utiliza el método *GET* para recuperar
+información. Para identificar el tipo de elemento a consultar se puede
+utilizar un "subdirectorio" en el URL.
+
+Por ejemplo, considere el siguiente programa que recupera todos datos de
+los países desde la base de datos y los presenta en formato JSON. Para
+invocarlo se debe usar un URL como
+*http://localhost/prueba.php/country*.
+
+::
+
+    <?php
+    require("Toro.php");
+
+    class DBHandler {
+        function get() {
+            try {
+              $dbh = new PDO('sqlite:test.db');
+            } catch (Exception $e) {
+              die("Unable to connect: " . $e->getMessage());
+            }
+            try {
+                $stmt = $dbh->prepare("SELECT * FROM countries");
+                $stmt->execute();
+        
+                json_encode($countries);
+        
+                $data = Array();
+                while ($result = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                    $data[] = $result;
+                }
+                echo json_encode($data);
+            } catch (Exception $e) {
+              echo "Failed: " . $e->getMessage();
+            }
+        }
+    }
+
+    Toro::serve(array(
+        "/country" => "DBHandler",
+    ));
+    ?>
+
+Si se desea invocar a este servicio web desde otro programa PHP basta
+con definir el contenido a partir de la dirección URL del servicio, por
+ejemplo:
 
 ::
 
     <?php 
-    try {
-        $dbh = new PDO('sqlite:test.db');
-        $dbh->exec("CREATE TABLE countries 
-                     (name TEXT, area INTEGER, population INTEGER, density REAL)");
-        $dbh = null;
-    } catch (PDOException $e) {
-        print "Error!: " . $e->getMessage() . "<br/>";
-        die();
-    }
-    ?>
-
-Note que en el ejemplo anterior la base de datos podría ser creada
-usando el comando *sqlite3 test.db ""* (si está disponible en el
-ambiente). Además, el archivo *test.db* como el directorio en que se
-encuentra, deben tener derechos de escritura.
-
-Transacciones
--------------
-
-Debido a que no todas las bases de datos soportan transacciones, PHP
-corre en el modo de *auto-commit* que ejecuta cada instrucción
-individual en forma implícita. Si se desea usar transacciones, y no se
-desea utilizar el modo de *auto-commit*, es necesario invocar el método
-*PDO::beginTransaction()* al inicio de la transacción. Si el manejador
-de la base de datos no permite el uso de transacciones se producirá una
-excepción (*PDOException*). Cuando se acabe de especificar la
-transacción se pueden utilizar los métodos *PDO::Commit* para aplicar
-dichas instrucciones, o bien, *PDO::rollBack* para abortar dicha
-transacción.
-
-::
-
-    <?php
-    try {
-      $dbh = new PDO('sqlite:test.db');
-      echo "Connected\n";
-    } catch (Exception $e) {
-      die("Unable to connect: " . $e->getMessage());
-    }
-
-    try {
-
-      $dbh->beginTransaction();
-      $dbh->exec("INSERT INTO countries (name, area, population, density) 
-                              values ('Belice',22966,334000,14.54)");
-      $dbh->exec("INSERT INTO countries (name, area, population, density) 
-                              values ('Costa Rica',51100,4726000,92.49)");
-      $dbh->exec("INSERT INTO countries (name, area, population, density) 
-                              values ('El Salvador',21041,6108000,290.29)");
-      $dbh->exec("INSERT INTO countries (name, area, population, density) 
-                              values ('Guatemala',108894,15284000,140.36)");
-      $dbh->exec("INSERT INTO countries (name, area, population, density) 
-                              values ('Honduras',112492,8447000,75.09)");
-      $dbh->commit();
-      
-    } catch (Exception $e) {
-      $dbh->rollBack();
-      echo "Failed: " . $e->getMessage();
-    }
-    ?>
-
-Si una transacción no fue terminada con la instrucción *commit* y el
-programa finaliza, la base de datos abortará la transacción
-automáticamente.
-
-Instrucciones preparadas
-------------------------
-
-Una *instrucción preparada* es un tipo de plantilla para SQL que puede
-ser personalizada utilizando parámetros. Existen dos beneficios de
-utilizar *instrucciones preparadas* : la base de datos únicamente
-compilará una vez la instrucción lo cual ahorra mucho tiempo, y los
-parámetros no necesitan *comillas* ya que el manejador se encarga de
-agregarlas a la instrucción. El realizar el enlace (bind) de parámetros
-se puede realizar por mediante el nombre del parámetro o por posición
-(utilizando el símbolo ?).
-
-::
-
-    <?php
-    try {
-      $dbh = new PDO('sqlite:test.db');
-      echo "Connected\n";
-    } catch (Exception $e) {
-      die("Unable to connect: " . $e->getMessage());
-    }
-
-    try {
-      $stmt = $dbh->prepare("INSERT INTO countries (name, area, population, density) 
-                                    VALUES (:name, :area, :population, :density)");
-      $stmt->bindParam(':name', $name);
-      $stmt->bindParam(':area', $area);
-      $stmt->bindParam(':population', $population);
-      $stmt->bindParam(':density', $density);
-      
-      $dbh->beginTransaction();
-      $name = 'Nicaragua'; $area = 129494; $population = 602800; $density = 46.55;
-      $stmt->execute();
-      $name = 'Panama'; $area = 78200; $population = 3652000; $density = 46.70;
-      $stmt->execute();
-      $dbh->commit();
-      
-    } catch (Exception $e) {
-      $dbh->rollBack();
-      echo "Failed: " . $e->getMessage();
-    }
-    ?>
-
-Adicionalmente, es posible utilizar un arreglo para pasar los parámetros
-de la consulta. En este caso no es necesario incluir el enlace (bind) de
-parámetros. Es importante notar que el orden de los parámetros resulta
-vital aquí.
-
-::
-
-    <?php
-    try {
-      $dbh = new PDO('sqlite:test.db');
-      echo "Connected\n";
-    } catch (Exception $e) {
-      die("Unable to connect: " . $e->getMessage());
-    }
-
-    try {
-      $stmt = $dbh->prepare("INSERT INTO countries (name, area, population, density) 
-                                    VALUES (?, ?, ?, ?)");
-      
-      $dbh->beginTransaction();
-      $stmt->execute(array('Nicaragua', 129494, 602800, 46.55));
-      $stmt->execute(array('Panama', 78200, 3652000, 46.70));
-      $dbh->commit();
-      
-    } catch (Exception $e) {
-      $dbh->rollBack();
-      echo "Failed: " . $e->getMessage();
-    }
-    ?>
-
-Recuperación de datos
----------------------
-
-El método *PDOStatement::fetch* permite obtener la siguiente fila de un
-conjunto de resultados de una consulta. Esta instrucción tiene varios
-estilos de recuperación,entre ellos:
-
--  PDO::FETCH\_NUM: Retorna la siguiente fila como un arreglo indexado
-   por posición.
--  PDO::FETCH\_ASSOC: Retorna la siguiente fila como un arreglo indexado
-   por el nombre de la columna.
--  PDO::FETCH\_OBJ: Retorna la siguiente fila como un objeto anónimo con
-   los nombres de las columnas como propiedades.
-
-Si se produce un error, la instrucción *fetch* retornará *FALSE*.
-
-::
-
-    <html>
-    <?php
-    try {
-      $dbh = new PDO('sqlite:test.db');
-    } catch (Exception $e) {
-      die("Unable to connect: " . $e->getMessage());
-    }
-    try {
-        $sth = $dbh->prepare("SELECT * FROM countries");
-        $sth->execute();
-        echo "<table border=1>";
-        echo "<tr><th>Country</th><th>Area</th><th>People</th><th>Dens.</th></tr>";
-        while ($result = $sth->fetch(PDO::FETCH_ASSOC)) {
-            echo "<tr><td>".$result['name']."</td><td>".$result['area'].
-                "</td><td>".$result['population']."</td><td>".$result['density'].
-                "</td></tr>";
+        
+        $path = "http://localhost/prueba.php/country";
+        
+        $data = file_get_contents($path);
+        $json = json_decode($data, true);
+        
+        echo "<html><body><table border=1>";
+        echo "<tr><th>Country</th><th>Area</th><th>Population</th><th>Density</th></tr>";
+        foreach ($json as $row) {
+            echo "<tr><td>".$row['name']."</td><td>".$row['area']."</td><td>".
+                 $row['population']."</td><td>".$row['density']."</td></tr>";
         }
-        echo "</table>";
-    } catch (Exception $e) {
-      echo "Failed: " . $e->getMessage();
-    }
+        echo "</table></body></html>";
+        
     ?>
-    </html>
 
-Por su parte la instrucción *PDOStatement::fetchAll* retornará un
-arreglo conteniendo todos las filas de un conjunto de resultados. El
-arreglo representa cada columna como un arreglo de valores por columnas
-o un objeto en donde las propiedades corresponden a los nombres de las
-columnas. Esta instrucción cuenta con varios modos al igual que la
-instrucción *fetch*, e inclusive se pueden especificar las columnas que
-se desean recuperar. Se retorna un arreglo vacío si no existen
-resultados, o *FALSE* si la consulta falla.
+Paso de parámetros
+~~~~~~~~~~~~~~~~~~
 
-El siguiente ejemplo muestra el uso de la instrucción *fetchAll* , y al
-mismo tiempo se muestra una forma de recuperar los datos cuando no se
-conocen de antemano los nombres de las columnas ni la cantidad de ellas.
+En los servicios web tipo RESTfull, y en ToroPHP en particular, los
+parámetros de la consulta son pasados también como se fueran
+subdirectorios y no mediante el símbolo ?. Por ejemplo, una llamada que
+normalmente se realizaría de la siguiente forma:
 
 ::
 
-    <html>
-        <?php
-        try {
-          $dbh = new PDO('sqlite:test.db');
-        } catch (Exception $e) {
-          die("Unable to connect: " . $e->getMessage());
+    http://localhost/prueba.php?table=country&name=Nicaragua
+
+se realizaría de la siguiente forma utilizando un servicio RESTfull:
+
+::
+
+    http://localhost/prueba.php/country/Nicaragua
+
+note que en este caso el nombre de los parámetros no aparecen y ellos
+deben ser identificados de forma implícita por su posición en la
+solicitud.
+
+Por ejemplo, considere ahora una modificación al programa anterior que
+recuperará los datos de un país en la base de datos y los presenta en
+formato JSON. Para invocarlo se debe usar un URL como
+*http://localhost/prueba.php/country/Nicaragua*.
+
+::
+
+    <?php
+        require("Toro.php");
+        
+        class DBHandler {
+           
+            function get($name=null) {
+                try {
+                  $dbh = new PDO('sqlite:test.db');
+                } catch (Exception $e) {
+                  die("Unable to connect: " . $e->getMessage());
+                }
+                try {
+                    if ($name!=null) {
+                        $stmt = $dbh->prepare("SELECT * FROM countries WHERE name = :name");
+                        $stmt->bindParam(':name', $name, PDO::PARAM_STR);
+                    } else {
+                        $stmt = $dbh->prepare("SELECT * FROM countries");
+                    }
+                    $stmt->execute();
+            
+                    $data = Array();
+                    while ($result = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                        $data[] = $result;
+                    }
+                    echo json_encode($data);
+                } catch (Exception $e) {
+                  echo "Failed: " . $e->getMessage();
+                }
+            }
         }
         
-        try {
-            $sth = $dbh->prepare("SELECT * FROM countries");
-            $sth->execute();
-            echo "<table border=1><tr>";
-            $result = $sth->fetchAll(PDO::FETCH_ASSOC);
-            $keys = array_keys($result[0]);
-            foreach ($keys as $key)
-              echo "<th>".$key."</th>";
-            echo "</tr>";
-            foreach ($result as $row) {
-              echo "<tr>";
-              foreach ($keys as $key)
-                  echo "<td>".$row[$key]."</td>";
-              echo "</tr>";
-            }
-            echo "</table>";
-        } catch (Exception $e) {
-          echo "Failed: " . $e->getMessage();
-        }
-        ?>
-    </html>
+        Toro::serve(array(
+            "/country" => "DBHandler",
+            "/country/:alpha" => "DBHandler",
+        ));
+    ?>
 
+Note que existen tres tipos de parámetros que reconoce ToroPHP: number,
+alpha y string; o bien se puede utilizar una expresión regular como:
+([0-9]+), ([a-zA-Z0-9-\_]+) ó ([a-zA-Z]+). Note que pueden ser
+utilizados múltiples parámetros en la solicitud, y estos serán pasados
+en el orden en que aparecen al método *get* de la clase utilizada como
+manejador (handler).
+
+Envío de datos
+--------------
+
+Para enviar información a un servicio *RESTfull* se utiliza el método
+*POST* ó *PUT*. Generalmente el método *PUT* se utiliza para crear un
+elemento, y el método *POST* para modificar los datos de un elemento
+existente. Una nueva modificación al servicio web incorpora la capacidad
+de modificar los datos de un registro, tal como se muestra a
+continuación:
+
+::
+
+    <?php
+        require("Toro.php");
+        
+        class DBHandler {
+           
+            function get($name=null) {
+                // como en el ejemplo anterior
+            }
+            
+            function post($name=null) {
+                try {
+                  $dbh = new PDO('sqlite:test.db');
+                } catch (Exception $e) {
+                  die("Unable to connect: " . $e->getMessage());
+                }
+                try {
+                  $area = $_POST['area'];
+                  $population = $_POST['population'];
+                  $density = $_POST['density'];
+                  echo $area;
+                  
+                  $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+                  $stmt = $dbh->prepare("UPDATE countries SET area=:area,
+                                        population=:population, density=:density 
+                                        WHERE name = :name");
+                  $stmt->bindParam(':area', $area);
+                  $stmt->bindParam(':population', $population);
+                  $stmt->bindParam(':density', $density);
+      
+                  $dbh->beginTransaction();
+                  $stmt->execute();
+                  $dbh->commit();
+                  echo 'Successfull';
+                } catch (Exception $e) {
+                  $dbh->rollBack();
+                  echo "Failed: " . $e->getMessage();
+                }
+            }
+        }
+        
+        Toro::serve(array(
+            "/country" => "DBHandler",
+            "/country/:alpha" => "DBHandler",
+        ));
+    ?>
+
+Sin embargo para invocar esta función del servicio web, desde otro
+programa PHP, es necesario utilizar un *stream PHP* tal como se muestra
+a continuación:
+
+::
+
+    <?php
+    $name='Nicaragua';
+
+    $url = 'http://localhost/tarea/Example10_2.php/country/'.$name;
+    $data = array('name'=>'Nicaragua','area'=>'129000',
+                  'population'=>'6548000','density' => '46.55');
+    $options = array(
+            'http' => array(
+            'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
+            'method'  => 'POST',
+            'content' => http_build_query($data),
+        )
+    );
+
+    $context  = stream_context_create($options);
+    $result = file_get_contents($url, false, $context);
+
+    echo $result;
+    ?>
+
+Borrado de datos
+----------------
+
+El método *DELETE* permite eliminar elementos cuando se utiliza el
+protocolo *RESTfull*
