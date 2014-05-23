@@ -40,8 +40,6 @@ Por ejemplo, considere el siguiente programa que recupera todos datos de los pa�
 				$stmt = $dbh->prepare("SELECT * FROM countries");
 				$stmt->execute();
 		
-				json_encode($countries);
-		
 				$data = Array();
 				while ($result = $stmt->fetch(PDO::FETCH_ASSOC)) {
 					$data[] = $result;
@@ -184,9 +182,10 @@ Para enviar información a un servicio *RESTfull* se utiliza el método *POST* �
 Sin embargo para invocar esta función del servicio web, desde otro programa PHP, es necesario utilizar un *stream PHP* tal como se muestra a continuación:
 
 	<?php
-	$name='Nicaragua';
 	
+	$name='Nicaragua';
 	$url = 'http://localhost/prueba.php/country/'.$name;
+	
 	$data = array('name'=>'Nicaragua','area'=>'129000',
 	              'population'=>'6548000','density' => '46.55');
 	$options = array(

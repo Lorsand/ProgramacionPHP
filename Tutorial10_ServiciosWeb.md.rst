@@ -56,8 +56,6 @@ invocarlo se debe usar un URL como
                 $stmt = $dbh->prepare("SELECT * FROM countries");
                 $stmt->execute();
         
-                json_encode($countries);
-        
                 $data = Array();
                 while ($result = $stmt->fetch(PDO::FETCH_ASSOC)) {
                     $data[] = $result;
@@ -236,9 +234,10 @@ a continuación:
 ::
 
     <?php
-    $name='Nicaragua';
 
+    $name='Nicaragua';
     $url = 'http://localhost/prueba.php/country/'.$name;
+
     $data = array('name'=>'Nicaragua','area'=>'129000',
                   'population'=>'6548000','density' => '46.55');
     $options = array(
