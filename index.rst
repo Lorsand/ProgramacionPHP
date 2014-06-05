@@ -18,5 +18,6 @@ Contenidos
    Tutorial4_Archivos.md.rst
    Tutorial5_BasesDatos.md.rst
    Tutorial7_XML-JSON.md.rst
+   Tutorial8_Imagenes.md.rst
    Tutorial9_Plantillas.md.rst
    Tutorial10_ServiciosWeb.md.rst
