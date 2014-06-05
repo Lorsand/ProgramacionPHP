@@ -20,13 +20,22 @@ Es importante indicar que la primer llamada que se realice a esta función defin
 
 ## Primitivas de dibujo
 
-Se cuenta con diferentes primitivas de dibujo que permiten crear gráficos sobre la imagen. Existen primitivas para dibujar líneas: *imageline(image, posX1, posY1, posX2, posY2, color)*, rectángulos: *imagerectangle(image, minX, minY, maxX, maxY, color)*, elipses *imageellipse(image, posX, posY, width, height, color)*, y polígonos *imagepolygon(image, array, num_points, color)*. Para dibujar primitivas rellenas se deben usar las instrucciones *imagefilledrectangle(image, minX, minY, maxX, maxY, color)*, elipses *imagefilledellipse(image, posX, posY, width, height, color)*, y polígonos *imagefilledpolygon(image, array, num_points, color)*.
+Se cuenta con diferentes primitivas de dibujo que permiten crear gráficos sobre la imagen. Existen primitivas para dibujar el borde de diferentes geometrías:
 
 Figura     Instrucción
----------  ---------------------------------------------------
+---------  -----------------------------------------------------
 Línea      imageline(image, posX1, posY1, posX2, posY2, color)
-Rectángulo magerectangle(image, minX, minY, maxX, maxY, color)
+Rectángulo imagerectangle(image, minX, minY, maxX, maxY, color)
+Elipse     imageellipse(image, posX, posY, width, height, color)
+Polígono   imagepolygon(image, array, num_points, color)
 
+Para dibujar geometrías rellenas se deben usar las instrucciones:
+
+Figura     Instrucción
+---------  ----------------------------------------------------------
+Rectángulo imagefilledrectangle(image, minX, minY, maxX, maxY, color)
+Elipse     imagefilledellipse(image, posX, posY, width, height, color)
+Polígono   imagefilledpolygon(image, array, num_points, color)
 
 	<?php
 	     $myImage = imagecreate( 200, 100 );
