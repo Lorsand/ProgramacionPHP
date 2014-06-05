@@ -53,6 +53,14 @@ primitivas rellenas se deben usar las instrucciones
 *imagefilledellipse(image, posX, posY, width, height, color)*, y
 polígonos *imagefilledpolygon(image, array, num\_points, color)*.
 
++--------------+-------------------------------------------------------+
+| Figura       | Instrucción                                           |
++==============+=======================================================+
+| Línea        | imageline(image, posX1, posY1, posX2, posY2, color)   |
++--------------+-------------------------------------------------------+
+| Rectángulo   | magerectangle(image, minX, minY, maxX, maxY, color)   |
++--------------+-------------------------------------------------------+
+
 ::
 
     <?php
