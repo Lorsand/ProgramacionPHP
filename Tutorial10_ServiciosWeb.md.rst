@@ -3,7 +3,7 @@ Servicios Web tipo RESTfull
 
 La librería *ToroPHP* permite la creación de servicios web tipo RESTfull
 de forma sencilla y eficiente en PHP. Esta se encuentra disponible en
-http://toroweb.org. Una vez que se descarga el archivo *Toro.php* éste
+http://github.com/anandkunal/ToroPHP. Una vez que se descarga el archivo *Toro.php* éste
 puede ser probado utilizando un pequeño programa de ejemplo, llamado
 *prueba.php*:
 
